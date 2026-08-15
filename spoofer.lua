@@ -29,13 +29,41 @@ repeat task.wait() until friend.Character
 friend.Character:WaitForChild("Humanoid")
 friend.Character.Name = decodedData.name
 friend.Character.Humanoid.DisplayName = decodedData.displayName
+
 Players:WaitForChild(decodedData.name):SetAttribute("Level", tonumber(level))
 Players:WaitForChild(decodedData.name):SetAttribute("StatisticDuelsWinStreak", tonumber(streak))
-Players:WaitForChild(decodedData.name):WaitForChild("CustomLeaderstats").Level.Value = tonumber(level)
-Players:WaitForChild(decodedData.name):WaitForChild("CustomLeaderstats"):FindFirstChild("Win Streak").Value = tonumber(streak)
-if tonumber(elo) > 0 then
-	Players:WaitForChild(decodedData.name):SetAttribute("DisplayELO", tonumber(elo))
+
+Players:WaitForChild(decodedData.name)
+    :WaitForChild("CustomLeaderstats")
+    .Level.Value = tonumber(level)
+
+-- profile card
+local function updateProfileLevel()
+    local playerGui = Players.LocalPlayer:FindFirstChild("PlayerGui")
+    local mainGui = playerGui and playerGui:FindFirstChild("MainGui")
+    local mainFrame = mainGui and mainGui:FindFirstChild("MainFrame")
+    local pages = mainFrame and mainFrame:FindFirstChild("Pages")
+    local viewProfile = pages and pages:FindFirstChild("ViewProfile")
+    local active = viewProfile and viewProfile:FindFirstChild("Active")
+    local profilePlayer = active and active:FindFirstChild("Player")
+    local bragging = profilePlayer and profilePlayer:FindFirstChild("Bragging")
+    local levelFrame = bragging and bragging:FindFirstChild("Level")
+    local valueLabel = levelFrame and levelFrame:FindFirstChild("Value")
+
+    if valueLabel and valueLabel:IsA("TextLabel") then
+        valueLabel.Text = tostring(level)
+    end
 end
+
+-- try immediately
+updateProfileLevel()
+
+-- keep checking because the profile UI may be created later
+task.spawn(function()
+    while task.wait(0.1) do
+        updateProfileLevel()
+    end
+end)
 
 -- changes user character --
 function Char()
