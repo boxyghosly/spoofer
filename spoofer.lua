@@ -68,26 +68,35 @@ end)
 -- changes user character --
 function Char()
     local plr = Players:FindFirstChild(decodedData.name)
-	local appearance = Players:GetCharacterAppearanceAsync(decodedData.id)
-	for i,v in pairs(plr.Character:GetChildren()) do
-		if v:IsA("Accessory") or v:IsA("Shirt") or v:IsA("Pants") or v:IsA("BodyColors") then
-			v:Destroy()
-		end
-	end
-	for i,v in pairs(appearance:GetChildren()) do
-		if v:IsA("Shirt") or v:IsA("Pants") or v:IsA("BodyColors") then
-			v.Parent = plr.Character
-		elseif v:IsA("Accessory") then
-			plr.Character.Humanoid:AddAccessory(v)
-		end
-	end
+    if not plr or not plr.Character then
+        return
+    end
 
-	local parent = plr.Character.Parent
-	plr.Character.Parent = nil
-	plr.Character.Parent = parent
+    local humanoid = plr.Character:FindFirstChildOfClass("Humanoid")
+    if not humanoid then
+        return
+    end
+
+    local success, description = pcall(function()
+        return Players:GetHumanoidDescriptionFromUserIdAsync(decodedData.id)
+    end)
+
+    if not success or not description then
+        warn("Couldn't get avatar description:", description)
+        return
+    end
+
+    local applied = pcall(function()
+        humanoid:ApplyDescriptionAsync(description)
+    end)
+
+    if not applied then
+        warn("Couldn't apply avatar description")
+    end
 end
+
 Char()
-Players:FindFirstChild(decodedData.name).CharacterAdded:Connect(function(char) -- fake the character every time the user resets
+Players:FindFirstChild(decodedData.name).CharacterAdded:Connect(function(char)
   Char()
 end)
 
