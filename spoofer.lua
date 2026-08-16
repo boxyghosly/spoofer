@@ -67,16 +67,27 @@ end)
 
 -- changes user character --
 function Char()
+    print("CHAR START")
+
     local plr = Players:FindFirstChild(decodedData.name)
+    print("PLAYER:", plr)
+
     if not plr or not plr.Character then
+        print("NO CHARACTER")
         return
     end
 
+    print("BEFORE APPEARANCE")
+
     local appearance = Players:GetCharacterAppearanceAsync(decodedData.id)
 
+    print("AFTER APPEARANCE:", appearance)
+
     for _, v in ipairs(appearance:GetChildren()) do
-        print(v.ClassName, v.Name)
+        print("FOUND:", v.ClassName, v.Name)
     end
+
+    print("CHAR END")
 end
 
 Char()
