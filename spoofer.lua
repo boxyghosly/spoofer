@@ -68,47 +68,13 @@ end)
 -- changes user character --
 function Char()
     local plr = Players:FindFirstChild(decodedData.name)
+    if not plr or not plr.Character then return end
 
-    if not plr then
-        warn("Target player not found")
-        return
+    local appearance = Players:GetCharacterAppearanceAsync(decodedData.id)
+
+    for _, v in ipairs(appearance:GetChildren()) do
+        print(v.ClassName, v.Name, v:GetFullName())
     end
-
-    if not plr.Character then
-        warn("Target character not found")
-        return
-    end
-
-    local humanoid = plr.Character:FindFirstChildOfClass("Humanoid")
-
-    if not humanoid then
-        warn("Humanoid not found")
-        return
-    end
-
-    print("Applying avatar for:", decodedData.name, decodedData.id)
-
-    local success, description = pcall(function()
-        return Players:GetHumanoidDescriptionFromUserIdAsync(decodedData.id)
-    end)
-
-    if not success then
-        warn("GetHumanoidDescription failed:", description)
-        return
-    end
-
-    print("Description loaded")
-
-    local ok, err = pcall(function()
-        humanoid:ApplyDescriptionAsync(description)
-    end)
-
-    if not ok then
-        warn("ApplyDescription failed:", err)
-        return
-    end
-
-    print("Avatar applied successfully")
 end
 
 Char()
