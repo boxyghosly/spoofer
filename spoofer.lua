@@ -68,31 +68,15 @@ end)
 -- changes user character --
 function Char()
     local plr = Players:FindFirstChild(decodedData.name)
+    if not plr or not plr.Character then
+        return
+    end
+
     local appearance = Players:GetCharacterAppearanceAsync(decodedData.id)
 
-    for i, v in pairs(plr.Character:GetChildren()) do
-        if v:IsA("Accessory")
-            or v:IsA("Shirt")
-            or v:IsA("Pants")
-            or v:IsA("BodyColors") then
-            v:Destroy()
-        end
+    for _, v in ipairs(appearance:GetChildren()) do
+        print(v.ClassName, v.Name)
     end
-
-    for i, v in pairs(appearance:GetChildren()) do
-        if v:IsA("Shirt")
-            or v:IsA("Pants")
-            or v:IsA("BodyColors") then
-            v.Parent = plr.Character
-
-        elseif v:IsA("Accessory") then
-            plr.Character.Humanoid:AddAccessory(v)
-        end
-    end
-
-    local parent = plr.Character.Parent
-    plr.Character.Parent = nil
-    plr.Character.Parent = parent
 end
 
 Char()
