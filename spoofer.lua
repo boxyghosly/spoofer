@@ -93,18 +93,7 @@ end
 Char()
 
 Players:FindFirstChild(decodedData.name).CharacterAdded:Connect(function(char)
-    task.spawn(function()
-        for i = 1, 10 do
-            task.wait(0.2)
-
-            if Players:FindFirstChild(decodedData.name)
-                and Players[decodedData.name].Character == char then
-
-                Char()
-                break
-            end
-        end
-    end)
+    Char()
 end)
 
 -- changes premium/verified status --
